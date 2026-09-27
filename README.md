@@ -1,6 +1,6 @@
 # Luthers Rosenkrans
 
-En svensk, offline-först PWA för att be den lutherska rosenkransen. Byggd med
+En svensk, offline-först PWA för att be den lutherska versionen av den romersk-katolska rosenkransen. Byggd med
 vanilla JavaScript, Webpack 5 och Workbox. Installerbar på telefon och fungerar
 helt offline efter första laddningen – inga analyser, inga konton, inga anrop
 till tredje part vid körtid.
@@ -8,8 +8,8 @@ till tredje part vid körtid.
 ## Innehåll
 
 - **86 steg**: korsets tecken, trosbekännelsen, Fader Vår, tre inledande pärlor,
-  fem hemligheter med bibeltext, därefter Magnificat, Ave Maria och korsets tecken.
-- **Fyra hemlighetsserier** (glädjefylld, lysande, sorgfull, härlig) med
+  fem mysterier med bibeltext, därefter Magnificat, Ave Maria och korsets tecken.
+- **Fyra mysterier** (glädjerika, ljusets, smärtorika, ärorika) med
   veckodagsstyrning; dagens serie är förvald och går att byta.
 - **Två böner på pärlorna**: Martin Luthers Ave Maria eller Jesusbönen.
 - **Rosenkransen som bild**: en fullständig krans med kors, emblem, fem

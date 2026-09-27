@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "kim.branzell.rosenkrans",
+        "sha256_cert_fingerprints": ["EF:84:D9:33:1E:2C:CF:C1:B0:6A:E0:37:4E:56:87:29:0E:A6:28:83:30:28:7C:05:65:FA:B6:F7:2E:1C:45:02"]
+      }
+    }]

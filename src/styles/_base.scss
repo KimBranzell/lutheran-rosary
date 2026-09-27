@@ -63,6 +63,9 @@ html {
   // Keep focused controls clear of the sticky prayer nav (2.4.11)
   scroll-padding-top: 6.5rem;
   scroll-padding-bottom: 6rem;
+  // NOTE: no background-color here on purpose. `html` is left transparent so the
+  // liturgical background set on `body` propagates to the canvas and is painted
+  // behind the transparent status/navigation bars in edge-to-edge mode (TWA).
 }
 
 body {

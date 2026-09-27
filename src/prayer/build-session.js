@@ -65,7 +65,7 @@ export function buildSession(prayerChoice, dayOfWeek, scriptureData) {
     addStep({
       kind: 'announcement',
       title: mystery.title,
-      body: `Hemlighet ${decade + 1} av 5 — ${mysterySet.name}`,
+      body: `Mysterium ${decade + 1} av 5 — ${mysterySet.name}`,
       decadeIndex: decade,
       beadId: null,
     });

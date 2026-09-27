@@ -40,7 +40,7 @@ function buildSymbol(token) {
 /** Swedish context label for the current step. */
 function kickerFor(step, index, total) {
   if (step.decadeIndex !== undefined) {
-    return `Hemlighet ${step.decadeIndex + 1} av 5`;
+    return `Mysterium ${step.decadeIndex + 1} av 5`;
   }
   if (index >= total - 3) {
     return 'Avslutning';

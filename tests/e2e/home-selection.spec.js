@@ -68,7 +68,7 @@ test('the header names both the season and the specific church-year day', async 
 test('selecting another set updates the preview and persists for today', async ({ page }) => {
   await page.locator('label.mystery-option:has(input[value="lysande"])').click();
 
-  await expect(page.locator('#preview-title')).toHaveText('Lysande');
+  await expect(page.locator('#preview-title')).toHaveText('Ljusets');
   await expect(page.locator('input[name="mystery-set"][value="lysande"]')).toBeChecked();
 
   const stored = await page.evaluate(() => JSON.parse(localStorage.getItem('luthers-rosenkrans-settings')));

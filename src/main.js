@@ -121,6 +121,15 @@ function updateTheme() {
 
   const dayEl = document.getElementById('observance-name');
   if (dayEl) dayEl.textContent = observance.name;
+
+  // Let the browser/PWA chrome follow the liturgical colour. In an installed app
+  // and a TWA this tints the surrounding UI; the TWA's own bar colours are baked
+  // into the APK and cannot change, so the app paints its background instead.
+  const themeColor = document.querySelector('meta[name="theme-color"]');
+  if (themeColor) {
+    const primary = getComputedStyle(document.body).getPropertyValue('--color-primary').trim();
+    if (primary) themeColor.setAttribute('content', primary);
+  }
 }
 
 // Bootstrap

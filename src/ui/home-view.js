@@ -206,7 +206,7 @@ export function renderHomeView(container, settings, onStart, onNavigateSettings,
       </p>
 
       <fieldset class="choice">
-        <legend class="choice__legend">Hemligheter</legend>
+        <legend class="choice__legend">Mysterier</legend>
         <p id="mystery-hint" class="choice__hint">Dagens krans är förvald. Välj en annan om du vill.</p>
         <div class="mystery-grid" aria-describedby="mystery-hint">
           ${mysteryCards}

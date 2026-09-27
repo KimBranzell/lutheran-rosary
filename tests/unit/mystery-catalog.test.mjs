@@ -50,9 +50,9 @@ test('weekdayOf is time-zone safe for an ISO date', () => {
 });
 
 test('a fresh day preselects the current weekday set', () => {
-  // 2026-09-27 is a Sunday -> Härlig
+  // 2026-09-27 is a Sunday -> Ärorika
   assert.equal(resolvePreselectedSetId('sorgfull', '2026-09-26', '2026-09-27'), 'harrlig');
-  // 2026-09-28 is a Monday -> Glädjefylld
+  // 2026-09-28 is a Monday -> Glädjerika
   assert.equal(resolvePreselectedSetId('lysande', '2026-09-25', '2026-09-28'), 'gladjefylld');
 });
 

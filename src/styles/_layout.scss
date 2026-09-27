@@ -5,7 +5,11 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
-  padding: var(--space-4) var(--space-4) var(--space-3);
+  // Keep the header clear of the status bar / display cutout in edge-to-edge mode
+  padding: calc(var(--space-4) + env(safe-area-inset-top, 0px))
+    max(var(--space-4), env(safe-area-inset-right, 0px))
+    var(--space-3)
+    max(var(--space-4), env(safe-area-inset-left, 0px));
   background: color-mix(in srgb, var(--color-surface) 88%, transparent);
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
@@ -127,11 +131,17 @@
 .app-main {
   max-width: var(--content-max);
   margin: 0 auto;
-  padding: var(--space-5) var(--space-4) var(--space-6);
+  padding: var(--space-5)
+    max(var(--space-4), env(safe-area-inset-right, 0px))
+    var(--space-6)
+    max(var(--space-4), env(safe-area-inset-left, 0px));
 }
 
 .app-footer {
-  padding: var(--space-5) var(--space-4);
+  padding: var(--space-5)
+    max(var(--space-4), env(safe-area-inset-right, 0px))
+    calc(var(--space-5) + env(safe-area-inset-bottom, 0px))
+    max(var(--space-4), env(safe-area-inset-left, 0px));
   text-align: center;
   color: var(--color-primary);
   border-top: 1px solid var(--color-border);

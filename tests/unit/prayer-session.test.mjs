@@ -53,12 +53,21 @@ test('exactly one Fatima step is the opening one (no decadeIndex)', () => {
   assert.equal(fatimaSteps.filter(s => s.decadeIndex !== undefined).length, 5);
 });
 
-test('no user-facing string contains the English word "myster"', () => {
+test('no user-facing string contains the English word "mystery"/"mysteries"', () => {
   const steps = buildSession('aveMaria', 1, mockScriptureData);
   for (const step of steps) {
-    assert.ok(!/myster/i.test(step.title || ''), `title "${step.title}"`);
-    assert.ok(!/myster/i.test(step.body || ''), `body "${step.body}"`);
+    assert.ok(!/\bmyster(y|ies)\b/i.test(step.title || ''), `title "${step.title}"`);
+    assert.ok(!/\bmyster(y|ies)\b/i.test(step.body || ''), `body "${step.body}"`);
   }
+});
+
+test('each decade is announced with the Swedish term "Mysterium"', () => {
+  const steps = buildSession('aveMaria', 1, mockScriptureData);
+  const announcements = steps.filter((s) => s.kind === 'announcement');
+  assert.equal(announcements.length, 5);
+  announcements.forEach((step, i) => {
+    assert.match(step.body, new RegExp(`^Mysterium ${i + 1} av 5 — `));
+  });
 });
 
 test('the Jesus Prayer is prayed in full on every bead', () => {

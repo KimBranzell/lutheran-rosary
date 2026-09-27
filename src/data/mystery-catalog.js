@@ -10,7 +10,7 @@ import { weekdayOf } from './weekdays.js';
 export const mysterySets = [
   {
     id: 'gladjefylld',
-    name: 'Glädjefylld',
+    name: 'Glädjerika',
     weekdays: [1, 6], // Monday, Saturday (0=Sunday)
     mysteries: [
       { title: 'Ängels budskap till Maria', ref: 'LUK 1:26-38' },
@@ -22,7 +22,7 @@ export const mysterySets = [
   },
   {
     id: 'lysande',
-    name: 'Lysande',
+    name: 'Ljusets',
     weekdays: [4], // Thursday
     mysteries: [
       { title: 'Vår Herres dop i floden Jordan', ref: 'MAT 3:13-16' },
@@ -34,7 +34,7 @@ export const mysterySets = [
   },
   {
     id: 'sorgfull',
-    name: 'Sorgfull',
+    name: 'Smärtorika',
     weekdays: [2, 5], // Tuesday, Friday
     mysteries: [
       { title: 'Vår Herres ångest i lustgården', ref: 'LUK 22:39-46' },
@@ -46,7 +46,7 @@ export const mysterySets = [
   },
   {
     id: 'harrlig',
-    name: 'Härlig',
+    name: 'Ärorika',
     weekdays: [0, 3], // Sunday, Wednesday
     mysteries: [
       { title: 'Vår Herres härliga uppståndelse', ref: 'MRK 16:1-7' },
