@@ -1,0 +1,180 @@
+// ── App shell layout ──
+
+.app-bar {
+  position: static;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-4) var(--space-3);
+  background: color-mix(in srgb, var(--color-surface) 88%, transparent);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--color-border);
+}
+
+// Sticky only where the bar is a single compact row; on phones it is two or
+// three rows tall and would obscure content under text zoom (1.4.4 / 2.4.11).
+@media (min-width: 34rem) {
+  .app-bar {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+  }
+}
+
+.app-bar__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.wordmark {
+  margin: 0;
+  font-size: var(--text-display);
+  overflow-wrap: anywhere;
+}
+
+.season-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0;
+  min-width: 0;
+  max-width: 100%;
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-primary);
+  font-size: var(--text-small);
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+
+.season-chip__dot {
+  width: 0.6rem;
+  height: 0.6rem;
+  flex: none;
+  border-radius: 50%;
+  background: var(--color-primary);
+}
+
+.season-chip__labels {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.season-chip__day {
+  color: var(--color-text);
+  font-size: 0.8125rem;
+  font-weight: 400;
+  line-height: 1.35;
+}
+
+.nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  padding: var(--space-1);
+  background: var(--color-secondary);
+  border-radius: var(--radius-pill);
+}
+
+.nav__item {
+  flex: 1;
+  min-width: 0;
+  min-height: var(--min-target);
+  padding: var(--space-2) var(--space-3);
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--color-text);
+  font-family: var(--font-ui);
+  font-weight: 500;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+}
+
+.nav__item:hover {
+  background: color-mix(in srgb, var(--color-primary) 14%, transparent);
+}
+
+.nav__item[aria-current='page'] {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
+}
+
+.nav__item:focus-visible {
+  outline: var(--focus-width) solid var(--color-focus);
+  outline-offset: var(--focus-offset);
+}
+
+// Very narrow screens: shrink the nav labels so a long single word
+// ("Inställningar") does not break mid-word.
+@media (max-width: 23rem) {
+  .nav__item {
+    padding-inline: var(--space-2);
+    font-size: 0.875rem;
+  }
+}
+
+.app-main {
+  max-width: var(--content-max);
+  margin: 0 auto;
+  padding: var(--space-5) var(--space-4) var(--space-6);
+}
+
+.app-footer {
+  padding: var(--space-5) var(--space-4);
+  text-align: center;
+  color: var(--color-primary);
+  border-top: 1px solid var(--color-border);
+}
+
+.app-footer p {
+  margin: 0;
+}
+
+@media (min-width: 34rem) {
+  .app-bar {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .app-bar__row {
+    flex: 0 1 auto;
+  }
+
+  .nav {
+    flex: 0 0 auto;
+  }
+
+  .nav__item {
+    flex: 0 0 auto;
+    min-width: 6.5rem;
+  }
+}
+
+@media (forced-colors: active) {
+  .nav {
+    border: 1px solid CanvasText;
+  }
+
+  .nav__item[aria-current='page'] {
+    background: Highlight;
+    color: HighlightText;
+    outline: 2px solid Highlight;
+    outline-offset: -2px;
+  }
+
+  .season-chip {
+    border-color: CanvasText;
+  }
+}

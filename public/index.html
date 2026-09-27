@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="sv-SE">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#6B4E16">
+  <meta name="description" content="Luthers Rosenkrans — Be rosenkransen på svenska">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" href="/icons/icon-192.png" type="image/png">
+  <link rel="apple-touch-icon" href="/icons/icon-192.png">
+  <title>Luthers Rosenkrans</title>
+</head>
+<body data-liturgical-color="vit">
+  <a class="skip-link" href="#app">Hoppa till innehållet</a>
+
+  <header class="app-bar" role="banner">
+    <div class="app-bar__row">
+      <h1 class="wordmark">Luthers Rosenkrans</h1>
+      <p class="season-chip">
+        <span class="season-chip__dot" aria-hidden="true"></span>
+        <span class="season-chip__labels">
+          <span id="season-name" class="season-chip__season">Kyrkoåret</span>
+          <span id="observance-name" class="season-chip__day"></span>
+        </span>
+      </p>
+    </div>
+    <nav class="nav" aria-label="Huvudnavigation">
+      <button id="nav-home" class="nav__item" type="button" aria-current="page">Hem</button>
+      <button id="nav-settings" class="nav__item" type="button">Inställningar</button>
+      <button id="nav-sources" class="nav__item" type="button">Källor</button>
+    </nav>
+  </header>
+
+  <main id="app" class="app-main" role="main">
+    <p>Laddar…</p>
+  </main>
+
+  <footer class="app-footer" role="contentinfo">
+    <p><small>© Svenska Kärnbibeln — CC BY-NC-SA 4.0</small></p>
+  </footer>
+</body>
+</html>

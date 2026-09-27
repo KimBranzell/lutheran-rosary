@@ -1,0 +1,31 @@
+# Beroenden och byggresultat
+node_modules/
+dist/
+
+# Genererad bibeltext (skapas av scripts/extract-scriptures.mjs vid bygge)
+src/data/generated/
+
+# Källan till bibeltexten ingår inte i repot – se README ("Skaffa bibeltexten")
+resources/SKB/
+
+# Tester
+test-results/
+playwright-report/
+blob-report/
+.playwright/
+
+# Android (genereras av scripts/init-twa.sh)
+/android/
+
+# Hemligheter och signering – committa aldrig
+.env
+.env.*
+*.jks
+*.keystore
+*.p12
+signing-*.txt
+assetlinks-private.json
+
+# OS
+.DS_Store
+Thumbs.db

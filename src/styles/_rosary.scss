@@ -1,0 +1,127 @@
+// ── Rosary loop visualization ──
+
+.rosary-panel {
+  display: grid;
+  place-items: center;
+  margin-bottom: var(--space-4);
+  padding: var(--space-4);
+}
+
+.rosary {
+  width: 100%;
+  max-width: 20rem;
+  height: auto;
+  aspect-ratio: 340 / 440;
+}
+
+.rosary .cord {
+  fill: none;
+  stroke: var(--color-control-border);
+  stroke-width: 2;
+}
+
+.rosary .bead {
+  fill: var(--color-surface);
+  stroke: var(--color-control-border);
+  stroke-width: 1.4;
+  transition: fill var(--dur) var(--ease), stroke var(--dur) var(--ease), r 200ms var(--ease);
+}
+
+.rosary .bead--large {
+  stroke-width: 1.8;
+}
+
+.rosary .bead.is-complete {
+  fill: color-mix(in srgb, var(--color-primary) 22%, var(--color-surface));
+  stroke: var(--color-primary);
+  stroke-width: 2.4;
+}
+
+.rosary .bead.is-active {
+  fill: var(--color-primary);
+  stroke: var(--color-on-primary);
+  stroke-width: 3;
+}
+
+.rosary .bead-halo {
+  fill: var(--color-primary);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.rosary .bead-halo.is-visible {
+  opacity: 0.18;
+}
+
+.rosary .medallion {
+  fill: var(--color-surface);
+  stroke: var(--color-control-border);
+  stroke-width: 2;
+}
+
+.rosary .medallion-inner {
+  fill: none;
+  stroke: var(--color-primary);
+  stroke-width: 1.5;
+}
+
+.rosary .medallion-mark {
+  fill: var(--color-primary);
+}
+
+.rosary .crucifix {
+  fill: var(--color-primary);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .rosary .bead-halo.is-visible {
+    /* Two gentle pulses only, so it never becomes an indefinite animation (2.2.2) */
+    animation: rosary-pulse 2400ms var(--ease) 2;
+  }
+
+  @keyframes rosary-pulse {
+    0%,
+    100% {
+      opacity: 0.18;
+    }
+
+    50% {
+      opacity: 0.34;
+    }
+  }
+}
+
+@media (forced-colors: active) {
+  .rosary .bead {
+    fill: Canvas;
+    stroke: CanvasText;
+  }
+
+  .rosary .bead.is-complete {
+    fill: Canvas;
+    stroke: CanvasText;
+    stroke-width: 2.4;
+  }
+
+  .rosary .bead.is-active {
+    fill: Highlight;
+    stroke: Highlight;
+  }
+
+  .rosary .bead-halo {
+    display: none;
+  }
+
+  .rosary .medallion,
+  .rosary .medallion-inner,
+  .rosary .medallion-mark,
+  .rosary .crucifix {
+    fill: Canvas;
+    stroke: CanvasText;
+  }
+
+  .rosary .medallion-mark,
+  .rosary .crucifix {
+    fill: CanvasText;
+  }
+}

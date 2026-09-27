@@ -1,0 +1,185 @@
+// ── Design tokens ──
+// All literal colour values live here and nowhere else.
+//
+// Tokens that reference a theme variable (`--color-text` …) must be declared in
+// the same themed block as that variable: custom-property `var()` references are
+// substituted where they are declared, so a `:root` token referencing a
+// `[data-liturgical-color]` variable resolves to invalid and the property falls
+// back to its initial value.
+
+:root {
+  // Typography
+  --font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
+  --font-ui: 'Alegreya Sans', system-ui, -apple-system, sans-serif;
+
+  --text-display: clamp(1.75rem, 5.5vw, 2.25rem);
+  --text-h2: 1.5rem;
+  --text-h3: 1.15rem;
+  --text-prayer: clamp(1.125rem, 4.6vw, 1.3rem);
+  --text-body: 1rem;
+  --text-small: 0.875rem;
+  --text-label: 0.75rem;
+
+  // Spacing scale
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+
+  // Radius
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-pill: 999px;
+
+  // Elevation
+  --shadow-sm: 0 1px 2px rgb(28 27 25 / 0.06);
+  --shadow-md: 0 6px 20px -8px rgb(28 27 25 / 0.28);
+  --shadow-lg: 0 18px 40px -18px rgb(28 27 25 / 0.35);
+
+  // Motion
+  --ease: cubic-bezier(0.2, 0.7, 0.3, 1);
+  --dur: 160ms;
+
+  // Layout
+  --content-max: 40rem;
+
+  // Focus and target size
+  --focus-width: 3px;
+  --focus-offset: 2px;
+  --min-target: 44px;
+}
+
+// ── Liturgical colour themes ──
+// Values are the contrast-checked palette; do not edit without re-verifying.
+// Each block also derives its own border tokens from its own `--color-text`.
+
+[data-liturgical-color='vit'] {
+  --color-primary: #6b4e16;
+  --color-secondary: #e9dfc8;
+  --color-background: #fbf8ef;
+  --color-surface: #ffffff;
+  --color-text: #1c1b19;
+  --color-on-primary: #ffffff;
+  --color-focus: #6b4e16;
+  --color-border: color-mix(in srgb, var(--color-text) 14%, transparent);
+  --color-control-border: color-mix(in srgb, var(--color-text) 55%, transparent);
+}
+
+[data-liturgical-color='röd'] {
+  --color-primary: #8f303a;
+  --color-secondary: #f0dcdd;
+  --color-background: #fbf2f2;
+  --color-surface: #ffffff;
+  --color-text: #1c1b19;
+  --color-on-primary: #ffffff;
+  --color-focus: #8f303a;
+  --color-border: color-mix(in srgb, var(--color-text) 14%, transparent);
+  --color-control-border: color-mix(in srgb, var(--color-text) 55%, transparent);
+}
+
+[data-liturgical-color='grön'] {
+  --color-primary: #2d6246;
+  --color-secondary: #dae7dd;
+  --color-background: #f2f7f2;
+  --color-surface: #ffffff;
+  --color-text: #1c1b19;
+  --color-on-primary: #ffffff;
+  --color-focus: #2d6246;
+  --color-border: color-mix(in srgb, var(--color-text) 14%, transparent);
+  --color-control-border: color-mix(in srgb, var(--color-text) 55%, transparent);
+}
+
+[data-liturgical-color='violett'] {
+  --color-primary: #5c477e;
+  --color-secondary: #e3dded;
+  --color-background: #f6f3fa;
+  --color-surface: #ffffff;
+  --color-text: #1c1b19;
+  --color-on-primary: #ffffff;
+  --color-focus: #5c477e;
+  --color-border: color-mix(in srgb, var(--color-text) 14%, transparent);
+  --color-control-border: color-mix(in srgb, var(--color-text) 55%, transparent);
+}
+
+[data-liturgical-color='svart'] {
+  --color-primary: #2d2d2d;
+  --color-secondary: #dfdeda;
+  --color-background: #f3f3f1;
+  --color-surface: #ffffff;
+  --color-text: #1c1b19;
+  --color-on-primary: #ffffff;
+  --color-focus: #2d2d2d;
+  --color-border: color-mix(in srgb, var(--color-text) 14%, transparent);
+  --color-control-border: color-mix(in srgb, var(--color-text) 55%, transparent);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
+    --shadow-md: 0 8px 24px -10px rgb(0 0 0 / 0.6);
+    --shadow-lg: 0 20px 44px -20px rgb(0 0 0 / 0.7);
+  }
+
+  [data-liturgical-color='vit'] {
+    --color-primary: #e9d6a4;
+    --color-secondary: #4d412a;
+    --color-background: #201b11;
+    --color-surface: #2a2418;
+    --color-text: #f5f2e9;
+    --color-on-primary: #151515;
+    --color-focus: #e9d6a4;
+    --color-border: color-mix(in srgb, var(--color-text) 20%, transparent);
+    --color-control-border: color-mix(in srgb, var(--color-text) 60%, transparent);
+  }
+
+  [data-liturgical-color='röd'] {
+    --color-primary: #ff8e98;
+    --color-secondary: #4b2c30;
+    --color-background: #211416;
+    --color-surface: #2d1c1e;
+    --color-text: #f5f2e9;
+    --color-on-primary: #151515;
+    --color-focus: #ff8e98;
+    --color-border: color-mix(in srgb, var(--color-text) 20%, transparent);
+    --color-control-border: color-mix(in srgb, var(--color-text) 60%, transparent);
+  }
+
+  [data-liturgical-color='grön'] {
+    --color-primary: #88cba6;
+    --color-secondary: #263f31;
+    --color-background: #151c17;
+    --color-surface: #1e2a22;
+    --color-text: #f5f2e9;
+    --color-on-primary: #151515;
+    --color-focus: #88cba6;
+    --color-border: color-mix(in srgb, var(--color-text) 20%, transparent);
+    --color-control-border: color-mix(in srgb, var(--color-text) 60%, transparent);
+  }
+
+  [data-liturgical-color='violett'] {
+    --color-primary: #bda8ec;
+    --color-secondary: #3d304f;
+    --color-background: #191521;
+    --color-surface: #241f2e;
+    --color-text: #f5f2e9;
+    --color-on-primary: #151515;
+    --color-focus: #bda8ec;
+    --color-border: color-mix(in srgb, var(--color-text) 20%, transparent);
+    --color-control-border: color-mix(in srgb, var(--color-text) 60%, transparent);
+  }
+
+  [data-liturgical-color='svart'] {
+    --color-primary: #d4d1cb;
+    --color-secondary: #393938;
+    --color-background: #171717;
+    --color-surface: #222222;
+    --color-text: #f5f2e9;
+    --color-on-primary: #151515;
+    --color-focus: #d4d1cb;
+    --color-border: color-mix(in srgb, var(--color-text) 20%, transparent);
+    --color-control-border: color-mix(in srgb, var(--color-text) 60%, transparent);
+  }
+}

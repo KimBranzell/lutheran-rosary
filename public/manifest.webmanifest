@@ -1,0 +1,30 @@
+{
+  "name": "Luthers Rosenkrans",
+  "short_name": "Rosenkrans",
+  "description": "Be den lutherska rosenkransen på svenska",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "theme_color": "#6B4E16",
+  "background_color": "#FBF8EF",
+  "lang": "sv-SE",
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
