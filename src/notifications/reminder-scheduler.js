@@ -8,7 +8,40 @@ import { loadSettings } from '../ui/home-view.js';
 
 const STORAGE_KEY_LAST_SENT = 'luthers-rosenkrans-reminder-last-sent';
 const NOTIFICATION_TITLE = 'Tid för bön';
-const NOTIFICATION_BODY = 'Ta en stund för rosenkransen.';
+
+/** Swedish label per reminder slot, used to name the moment in the notification. */
+const SLOT_LABELS = {
+  morning: 'Morgon',
+  noon: 'Middag',
+  evening: 'Kväll',
+  night: 'Natt',
+};
+
+/**
+ * Narrow a slot id to a known key.
+ *
+ * `slot` can arrive from `event.notification.data`, so it must never be allowed
+ * to resolve through the prototype chain — `SLOT_LABELS['__proto__']` is truthy
+ * and would render as "[object Object]" in the notification body.
+ *
+ * @param {string} slot
+ * @returns {'morning'|'noon'|'evening'|'night'}
+ */
+function resolveSlot(slot) {
+  return Object.hasOwn(SLOT_LABELS, slot) ? slot : 'evening';
+}
+
+/** Delay applied by the "Påminn senare" action. */
+const SNOOZE_MINUTES = 10;
+
+// NOTE: `actions` is unsupported in Safari entirely (macOS and iOS), and
+// `notificationclick` does not fire at all on iOS. Unknown option members are
+// ignored by the spec, so sending them is safe everywhere — the buttons simply
+// do not appear where unsupported. See README "Påminnelser".
+const NOTIFICATION_ACTIONS = [
+  { action: 'open', title: 'Be rosenkransen' },
+  { action: 'later', title: 'Påminn senare' },
+];
 
 /**
  * Get the last-sent dates from localStorage.
@@ -69,19 +102,29 @@ function getNextOccurrence(timeStr) {
 /**
  * Show a notification using the service worker.
  */
-async function showNotification() {
-  if (!('Notification' in window) || Notification.permission !== 'granted') {
+/**
+ * Show a local reminder notification.
+ * Exported for unit testing (the options payload is otherwise unreachable).
+ *
+ * @param {string} [slot] which reminder slot is firing
+ * @returns {Promise<boolean>} true when a notification was shown
+ */
+export async function showNotification(slot = 'evening') {
+  if (typeof window === 'undefined' || !('Notification' in window) || Notification.permission !== 'granted') {
     return false;
   }
 
   try {
     const registration = await navigator.serviceWorker.ready;
     await registration.showNotification(NOTIFICATION_TITLE, {
-      body: NOTIFICATION_BODY,
+      body: `${SLOT_LABELS[resolveSlot(slot)]} — ta en stund för rosenkransen.`,
       icon: '/icons/icon-192.png',
       badge: '/icons/icon-192.png',
       tag: 'rosary-reminder',
       vibrate: [200, 100, 200],
+      actions: NOTIFICATION_ACTIONS,
+      // Lets the click handler reschedule the same slot on "Påminn senare".
+      data: { slot: resolveSlot(slot) },
     });
     return true;
   } catch (err) {
@@ -109,7 +152,7 @@ export function checkMissedReminders() {
 
     // If the reminder time has passed today and we haven't sent it yet
     if (now >= reminderTime && lastSent[slot] !== today) {
-      showNotification().then(sent => {
+      showNotification(slot).then(sent => {
         if (sent) {
           lastSent[slot] = today;
           saveLastSentDates(lastSent);
@@ -141,7 +184,7 @@ export function scheduleReminders() {
 
     const delay = nextTime.getTime() - now.getTime();
     const timerId = setTimeout(() => {
-      showNotification().then(sent => {
+      showNotification(slot).then(sent => {
         if (sent) {
           const lastSent = getLastSentDates();
           lastSent[slot] = todayString();
@@ -172,6 +215,41 @@ export function initReminders() {
     if (document.visibilityState === 'visible') {
       checkMissedReminders();
       scheduleReminders();
+    }
+  });
+}
+
+/**
+ * Delay a repeat of the most recent reminder ("Påminn senare").
+ *
+ * Best-effort by design: the timer lives in this window, so it only fires while
+ * the app stays open. The service worker cannot hold a long timer of its own —
+ * it posts `{type:'REMINDER_SNOOZE'}` to any open client instead, which is what
+ * lands here. Documented in README "Påminnelser".
+ *
+ * @param {number} [minutes]
+ * @param {string} [slot] which slot's label to show
+ * @returns {number} timer id (tracked so `scheduleReminders()` can clear it)
+ */
+export function scheduleSnooze(minutes = SNOOZE_MINUTES, slot = 'evening') {
+  const delay = Math.max(0, Number(minutes) || 0) * 60_000;
+  const timerId = setTimeout(() => {
+    showNotification(slot);
+  }, delay);
+  activeTimers.push(timerId);
+  return timerId;
+}
+
+/**
+ * Handle snooze requests posted by the service worker. Call once at startup.
+ * A no-op when service workers are unavailable (private mode, unsupported).
+ */
+export function initSnoozeListener() {
+  if (typeof navigator === 'undefined' || !('serviceWorker' in navigator)) return;
+  navigator.serviceWorker.addEventListener('message', (event) => {
+    const data = event && event.data;
+    if (data && data.type === 'REMINDER_SNOOZE') {
+      scheduleSnooze(data.minutes, data.slot);
     }
   });
 }

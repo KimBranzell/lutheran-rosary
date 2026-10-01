@@ -174,6 +174,19 @@ legend {
   top: var(--space-4);
 }
 
+// Rendered only when scripting is disabled (the surrounding <noscript> is raw
+// text otherwise), so this rule is inert for normal users. Colours come from the
+// hardcoded body attribute, so the default theme works without JS too.
+.noscript-note {
+  margin: 0;
+  padding: var(--space-4) max(var(--space-4), env(safe-area-inset-right, 0px))
+    max(var(--space-4), env(safe-area-inset-left, 0px));
+  background: var(--color-surface);
+  color: var(--color-text);
+  border-bottom: 1px solid var(--color-border);
+  font-weight: 500;
+}
+
 // ── Global focus style ──
 :focus-visible {
   outline: var(--focus-width) solid var(--color-focus);

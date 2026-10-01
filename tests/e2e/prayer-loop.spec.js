@@ -57,7 +57,7 @@ test('Scripture readings contain no bracket characters', async ({ page }) => {
     await page.click('#btn-next');
   }
   const body = await page.textContent('#step-body');
-  expect(body).not.toMatch(/[\[\]()]/);
+  expect(body).not.toMatch(/[()[\]]/);
   expect(body.length).toBeGreaterThan(40);
 });
 
@@ -167,4 +167,40 @@ test('arrow keys navigate without double-activating', async ({ page }) => {
   await page.locator('#btn-next').focus();
   await page.keyboard.press('Space');
   await expect(page.locator('#step-current')).toHaveText('3');
+});
+
+test('arrow keys work after leaving and re-entering the prayer view', async ({ page }) => {
+  await page.click('#btn-exit');
+  await expect(page.locator('.home-view')).toBeVisible();
+  await page.click('#btn-start');
+  await expect(page.locator('.prayer-view')).toBeVisible();
+
+  await expect(page.locator('#step-current')).toHaveText('1');
+  await page.keyboard.press('ArrowRight');
+  // Exactly one step — never a skipped step from a duplicated handler.
+  await expect(page.locator('#step-current')).toHaveText('2');
+  await expect(page.locator('.prayer-view')).toBeVisible();
+});
+
+test('a stale session left on its last step cannot hijack the next session', async ({ page }) => {
+  // Drive session 1 all the way to step 86 and exit, so the leaked handler (if
+  // the view failed to tear down) would still see isLast === true. On the next
+  // ArrowRight that stale handler would call onExit() and bounce us to home
+  // instead of advancing. With correct teardown only the live handler runs.
+  await page.evaluate(() => {
+    const total = document.querySelector('#step-total').textContent;
+    while (document.querySelector('#step-current').textContent !== total) {
+      document.querySelector('#btn-next').click();
+    }
+    document.querySelector('#btn-next').click(); // "Avsluta" on the last step
+  });
+  await expect(page.locator('.home-view')).toBeVisible();
+
+  await page.click('#btn-start');
+  await expect(page.locator('.prayer-view')).toBeVisible();
+  await expect(page.locator('#step-current')).toHaveText('1');
+
+  await page.keyboard.press('ArrowRight');
+  await expect(page.locator('#step-current')).toHaveText('2');
+  await expect(page.locator('.prayer-view')).toBeVisible();
 });

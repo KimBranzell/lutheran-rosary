@@ -3,6 +3,8 @@
  * All user-facing strings are in Swedish.
  */
 
+import { esc } from '../util/esc.js';
+
 export const sourceAttribution = {
   bibleName: 'Svenska Kärnbibeln',
   bibleNameLocal: 'Svenska Kärnbibeln — en expanderad översättning',
@@ -17,12 +19,6 @@ export const sourceAttribution = {
 
 export function getAttributionHtml() {
   const a = sourceAttribution;
-  const esc = (value) => String(value)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
   return `
     <p>Bibeltext hämtad från <a href="${esc(a.sourceUrl)}" target="_blank" rel="noopener noreferrer">${esc(a.bibleName)}</a>.</p>
     <p>© ${esc(a.provider)}. Tillgänglig under <a href="${esc(a.licenseUrl)}" target="_blank" rel="noopener noreferrer">${esc(a.licenseName)}</a>.</p>

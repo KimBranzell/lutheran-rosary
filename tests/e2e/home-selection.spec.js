@@ -11,6 +11,13 @@ const SET_BY_WEEKDAY = [
   'gladjefylld', // Saturday
 ];
 
+const SET_NAMES = {
+  gladjefylld: 'Glädjerika',
+  lysande: 'Ljusets',
+  sorgfull: 'Smärtorika',
+  harrlig: 'Ärorika',
+};
+
 test.beforeEach(async ({ page }) => {
   await page.addInitScript(() => {
     try {
@@ -66,13 +73,19 @@ test('the header names both the season and the specific church-year day', async 
 });
 
 test('selecting another set updates the preview and persists for today', async ({ page }) => {
-  await page.locator('label.mystery-option:has(input[value="lysande"])').click();
+  // Must not be today's preselection: clicking an already-checked radio fires no
+  // `change` event, so nothing would be written to localStorage. (This test used
+  // to hard-code "lysande" and therefore failed every Thursday.)
+  const preselected = await page.locator('input[name="mystery-set"]:checked').getAttribute('value');
+  const target = Object.keys(SET_NAMES).find((id) => id !== preselected);
 
-  await expect(page.locator('#preview-title')).toHaveText('Ljusets');
-  await expect(page.locator('input[name="mystery-set"][value="lysande"]')).toBeChecked();
+  await page.locator(`label.mystery-option:has(input[value="${target}"])`).click();
+
+  await expect(page.locator('#preview-title')).toHaveText(SET_NAMES[target]);
+  await expect(page.locator(`input[name="mystery-set"][value="${target}"]`)).toBeChecked();
 
   const stored = await page.evaluate(() => JSON.parse(localStorage.getItem('luthers-rosenkrans-settings')));
-  expect(stored.mysterySetId).toBe('lysande');
+  expect(stored.mysterySetId).toBe(target);
   const today = new Date();
   const iso = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
   expect(stored.mysterySetDate).toBe(iso);
@@ -97,4 +110,33 @@ test('corrupt stored settings fall back safely with a Swedish notice', async ({ 
   await expect(notice).toContainText('inställningar');
   // The app is still usable and a valid set is selected.
   await expect(page.locator('input[name="mystery-set"]:checked')).toHaveCount(1);
+});
+
+test('the chosen mystery set is the one actually prayed', async ({ page }) => {
+  // Pick a set that is NOT today's, so the assertion cannot pass by accident
+  // (an assertion hard-coded to one set would be vacuous on the matching weekday).
+  const preselected = await page.locator('input[name="mystery-set"]:checked').getAttribute('value');
+  const target = Object.keys(SET_NAMES).find((id) => id !== preselected);
+  const expectedName = SET_NAMES[target];
+
+  await page.locator(`label.mystery-option:has(input[value="${target}"])`).click();
+  await expect(page.locator('#preview-title')).toHaveText(expectedName);
+
+  // The preview is the contract: capture what the user was shown before starting.
+  const expectedRef = (await page.locator('#preview-list .mystery-preview__ref').first().textContent()).trim();
+
+  await page.click('#btn-start');
+  await expect(page.locator('.prayer-view')).toBeVisible();
+
+  // 8 opening steps (indices 0-7) → step 9 is the first mystery announcement.
+  for (let i = 0; i < 8; i++) {
+    await page.click('#btn-next');
+  }
+  await expect(page.locator('#step-current')).toHaveText('9');
+  await expect(page.locator('#step-body')).toHaveText(`Mysterium 1 av 5 — ${expectedName}`);
+
+  // Step 10 is that mystery's Scripture reading — it must match the preview too.
+  await page.click('#btn-next');
+  await expect(page.locator('#step-current')).toHaveText('10');
+  await expect(page.locator('#step-ref')).toHaveText(expectedRef);
 });

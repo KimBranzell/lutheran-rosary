@@ -13,7 +13,7 @@
  */
 
 import { SaxesParser } from 'saxes';
-import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'fs';
+import { readFileSync, writeFileSync, mkdirSync, existsSync, copyFileSync } from 'fs';
 import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
@@ -121,7 +121,6 @@ function extractVersesFromUsx(bookCode, chapter, startVerse, endVerse) {
 
   const parser = new SaxesParser();
   let currentChapter = null;
-  let currentVerse = null;
   let inVerse = false;
   let inXt = false;
   let xtDepth = 0;
@@ -137,7 +136,6 @@ function extractVersesFromUsx(bookCode, chapter, startVerse, endVerse) {
     if (node.name === 'verse' && node.attributes.number && node.attributes.sid) {
       const verseNum = parseInt(node.attributes.number, 10);
       if (currentChapter === chapter && verseNum >= startVerse && verseNum <= endVerse) {
-        currentVerse = verseNum;
         inVerse = true;
         verseFound = true;
         textBuffer = '';
@@ -175,7 +173,6 @@ function extractVersesFromUsx(bookCode, chapter, startVerse, endVerse) {
         }
         collectedText += textBuffer;
         inVerse = false;
-        currentVerse = null;
         textBuffer = '';
       }
     }
@@ -188,19 +185,6 @@ function extractVersesFromUsx(bookCode, chapter, startVerse, endVerse) {
   }
 
   return cleanExtractedText(collectedText);
-}
-
-// ── Parse a reference string like "LUK 1:26-38" ──
-
-function parseRef(refStr) {
-  const match = refStr.match(/^([A-Z0-9]+)\s+(\d+):(\d+)(?:-(\d+))?$/);
-  if (!match) throw new Error(`Invalid reference format: ${refStr}`);
-  return {
-    book: match[1],
-    chapter: parseInt(match[2], 10),
-    startVerse: parseInt(match[3], 10),
-    endVerse: match[4] ? parseInt(match[4], 10) : parseInt(match[3], 10),
-  };
 }
 
 // ── Main ──
@@ -266,6 +250,38 @@ function main() {
   }
   writeFileSync(OUTPUT_FILE, JSON.stringify(results, null, 2), 'utf-8');
   console.log(`\nWrote ${Object.keys(results).length} passages to ${OUTPUT_FILE}`);
+}
+
+// ── CI fixture ────────────────────────────────────────────────────────────────
+// The licensed source (resources/SKB/) can never enter the repository, so a
+// clean checkout — i.e. CI — cannot run the real extraction. This branch lets CI
+// build against a SYNTHETIC stand-in instead.
+//
+// It must run BEFORE main(), which aborts when resources/SKB/ is absent.
+//
+// Guarded by `CI=true` so it is impossible to produce a fixture build by
+// accident: anything built this way is not a publishable artifact, and the
+// placeholder text must never be mistaken for scripture. See README.
+if (process.env.USE_SCRIPTURE_FIXTURE === '1') {
+  if (process.env.CI !== 'true') {
+    console.error(
+      'USE_SCRIPTURE_FIXTURE=1 is only permitted when CI=true.\n' +
+      'Supply resources/SKB/ (see README) to produce a real build.',
+    );
+    process.exit(1);
+  }
+
+  const fixture = resolve(__dirname, 'fixtures/scripture-passages.fixture.json');
+  if (!existsSync(fixture)) {
+    console.error(`Missing CI fixture: ${fixture}`);
+    process.exit(1);
+  }
+  if (!existsSync(OUTPUT_DIR)) {
+    mkdirSync(OUTPUT_DIR, { recursive: true });
+  }
+  copyFileSync(fixture, OUTPUT_FILE);
+  console.log('Using the CI scripture fixture (synthetic placeholder text, not publishable).');
+  process.exit(0);
 }
 
 main();

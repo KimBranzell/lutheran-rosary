@@ -2,6 +2,7 @@
   "name": "Luthers Rosenkrans",
   "short_name": "Rosenkrans",
   "description": "Be den lutherska rosenkransen på svenska",
+  "id": "/",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

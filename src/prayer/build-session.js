@@ -9,15 +9,18 @@
  */
 
 import { korsetsTecken, trosbekannelsen, faderVar, araVare, fatimaboen, closingAveMaria, magnificat, aveMaria, jesuboen } from '../data/prayer-texts.js';
-import { getMysterySetForDay, passageId } from '../data/mystery-catalog.js';
+import { getMysterySetForDay, isKnownSetId, mysterySets, passageId } from '../data/mystery-catalog.js';
 
 /**
  * @param {'aveMaria' | 'jesuBoen'} prayerChoice
  * @param {number} dayOfWeek 0=Sunday, 1=Monday, ..., 6=Saturday
  * @param {object} scriptureData - loaded scripture-passages.json
+ * @param {string} [mysterySetId] the set chosen on the home screen; when it names
+ *   a known set it wins over the weekday default, so the preview the user saw is
+ *   the session they get. Ignored when absent or unknown.
  * @returns {Array<object>} flat array of 86 steps
  */
-export function buildSession(prayerChoice, dayOfWeek, scriptureData) {
+export function buildSession(prayerChoice, dayOfWeek, scriptureData, mysterySetId) {
   const steps = [];
   let stepIndex = 0;
 
@@ -29,8 +32,11 @@ export function buildSession(prayerChoice, dayOfWeek, scriptureData) {
   // Get the prayer texts based on choice
   const beadPrayer = prayerChoice === 'jesuBoen' ? jesuboen : aveMaria;
 
-  // Get mystery set for today
-  const mysterySet = getMysterySetForDay(dayOfWeek);
+  // The set the user explicitly chose on the home screen wins; otherwise the
+  // weekday's traditional set. `isKnownSetId` guarantees find() resolves, and the
+  // `||` keeps the weekday default as a belt-and-braces fallback.
+  const chosenSet = isKnownSetId(mysterySetId) ? mysterySets.find(s => s.id === mysterySetId) : null;
+  const mysterySet = chosenSet || getMysterySetForDay(dayOfWeek);
 
   // ── Opening (8 steps) — pendant: crucifix → pater-1 → 3 beads → pater-2 → medallion ──
   addStep({ kind: 'sign', title: korsetsTecken.title, body: korsetsTecken.body, symbol: korsetsTecken.symbol, beadId: 'crucifix' });

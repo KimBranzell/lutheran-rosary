@@ -1,0 +1,41 @@
+# Dependabot-konfiguration.
+#
+# Bakgrund och bedömning av de kvarstående aviseringarna finns i
+# docs/dependency-alerts.md i det privata anteckningsrepet
+# (github.com/KimBranzell/lutheran-rosenkrans-notes) – filen ligger inte i det
+# här repot. ignore-reglerna nedan beskriver en godkänd
+# kvarstående risk i utvecklingsberoenden – de döljer inte framtida rättningar,
+# eftersom intervallen bara matchar de sårbara versionerna.
+version: 2
+
+updates:
+  # ---- npm: webbappen och byggverktygen ----
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "chore(deps)"
+      prefix-development: "chore(deps-dev)"
+    # Godkänd kvarstående risk (se docs/dependency-alerts.md i notes-repot):
+    # extract-zip, file-type och uuid är transitiva beroenden till
+    # @bubblewrap/cli, som endast används som utvecklingsverktyg för att
+    # paketera Android-TWA:n. Ingen rättad version är nåbar uppströms och
+    # CLI:t kör redan senaste versionen.
+    ignore:
+      - dependency-name: "extract-zip"
+        versions: ["<=2.0.1"]
+      - dependency-name: "file-type"
+        versions: [">=13.0.0 <21.3.1"]
+      - dependency-name: "uuid"
+        versions: ["<11.1.1"]
+
+  # ---- Gradle: Android-TWA:n ----
+  - package-ecosystem: "gradle"
+    directory: "/android"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "chore(deps)"

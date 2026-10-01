@@ -201,3 +201,39 @@ test('mystery announcement comes before reading in each decade', () => {
     assert.ok(announcementIdx < readingIdx, `Announcement should come before reading in decade ${d}`);
   }
 });
+
+// ── The home-screen mystery-set override must reach the session ──
+
+test('a chosen mystery set overrides the weekday default in every announcement', () => {
+  // dayOfWeek 1 = Monday, whose default is Glädjerika. 'lysande' must win.
+  const steps = buildSession('aveMaria', 1, mockScriptureData, 'lysande');
+  const announcements = steps.filter((s) => s.kind === 'announcement');
+  assert.equal(announcements.length, 5);
+  for (const step of announcements) {
+    assert.match(step.body, / — Ljusets$/, `expected Ljusets, got: ${step.body}`);
+  }
+});
+
+test('the chosen set also drives the Scripture readings', () => {
+  const steps = buildSession('aveMaria', 1, mockScriptureData, 'lysande');
+  const readings = steps.filter((s) => s.kind === 'reading');
+  assert.equal(readings.length, 5);
+  // First Ljusets mystery is Matthew 3:13-16, not Monday's Luke 1:26-38.
+  assert.equal(readings[0].scriptureRef, 'Matteusevangeliet 3:13-16');
+});
+
+test('an unknown mystery set id falls back to the weekday default', () => {
+  const steps = buildSession('aveMaria', 1, mockScriptureData, 'not-a-set');
+  const announcements = steps.filter((s) => s.kind === 'announcement');
+  for (const step of announcements) {
+    assert.match(step.body, / — Glädjerika$/, `expected weekday fallback, got: ${step.body}`);
+  }
+});
+
+test('omitting the mystery set id keeps the weekday default (backwards compatible)', () => {
+  const steps = buildSession('aveMaria', 4, mockScriptureData); // Thursday → Ljusets
+  const announcements = steps.filter((s) => s.kind === 'announcement');
+  for (const step of announcements) {
+    assert.match(step.body, / — Ljusets$/);
+  }
+});

@@ -3,17 +3,27 @@
  */
 
 import { loadSettings, saveSettings, isValidTime } from './home-view.js';
+import { esc } from '../util/esc.js';
+import { applyTextScale, isValidTextScale, TEXT_SCALES } from './text-scale.js';
+// The scheduler owns the live timers and re-reads settings from localStorage
+// itself, so it only needs to be nudged after each save.
+import { scheduleReminders } from '../notifications/reminder-scheduler.js';
 
 const SLOT_LABELS = { morning: 'Morgon', noon: 'Middag', evening: 'Kväll', night: 'Natt' };
 const SLOT_ORDER = ['morning', 'noon', 'evening', 'night'];
 
-function esc(value) {
-  return String(value)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
+/** Label per supported scale — keep in step with `TEXT_SCALES`. */
+const SCALE_LABELS = { 1: 'Normal', 1.25: 'Stor', 1.5: 'Mycket stor' };
+
+function scaleOption(scale, current) {
+  const checked = isValidTextScale(current) && Number(current) === scale ? ' checked' : '';
+  return `
+          <label class="segmented__option">
+            <input class="visually-hidden" type="radio" name="text-scale" value="${scale}"${checked}>
+            <span class="segmented__title">
+              <span class="segmented__check" aria-hidden="true">✓</span>${SCALE_LABELS[scale]}
+            </span>
+          </label>`;
 }
 
 export function renderSettingsView(container, onBack) {
@@ -21,8 +31,16 @@ export function renderSettingsView(container, onBack) {
 
   container.innerHTML = `
     <section class="settings-view" aria-labelledby="settings-heading">
-      <h2 id="settings-heading">Inställningar för påminnelser</h2>
+      <h2 id="settings-heading">Inställningar</h2>
 
+      <fieldset class="choice">
+        <legend class="choice__legend">Textstorlek</legend>
+        <div class="segmented">
+          ${TEXT_SCALES.map((scale) => scaleOption(scale, settings.textScale)).join('')}
+        </div>
+      </fieldset>
+
+      <h3 class="settings-subheading">Påminnelser</h3>
       <p class="settings-note">
         Påminnelser är bästa ansträngning. De kan försenas eller missas om appen är stängd
         eller avstängd av systemet.
@@ -67,6 +85,9 @@ export function renderSettingsView(container, onBack) {
       }
       settings.reminders[slot].time = isValidTime(timeInput.value) ? timeInput.value : '';
       saveSettings(settings);
+      // Timers were built at boot from the old settings; rebuild now, otherwise a
+      // reminder enabled while the app stays in the foreground never fires.
+      scheduleReminders();
     });
 
     timeInput.addEventListener('change', () => {
@@ -76,6 +97,20 @@ export function renderSettingsView(container, onBack) {
         timeInput.value = '';
       }
       saveSettings(settings);
+      scheduleReminders();
+    });
+  });
+
+  // Text size — applied immediately so the effect is visible, then persisted.
+  container.querySelectorAll('input[name="text-scale"]').forEach((input) => {
+    input.addEventListener('change', (event) => {
+      if (!event.target.checked) return;
+      const scale = Number(event.target.value);
+      // Never persist a value the app does not support.
+      if (!isValidTextScale(scale)) return;
+      settings.textScale = scale;
+      saveSettings(settings);
+      applyTextScale(settings.textScale);
     });
   });
 
@@ -105,6 +140,8 @@ export function renderSettingsView(container, onBack) {
     if ('Notification' in window) {
       await Notification.requestPermission();
       updateNotifStatus();
+      // Permission state feeds the scheduler's decision to fire; reschedule now.
+      scheduleReminders();
     }
   });
 

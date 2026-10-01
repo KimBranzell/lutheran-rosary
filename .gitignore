@@ -29,3 +29,5 @@ assetlinks-private.json
 # OS
 .DS_Store
 Thumbs.db
+*.md
+!README.md

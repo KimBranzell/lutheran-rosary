@@ -1,0 +1,49 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  lint-and-unit:
+    name: Lint & unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run lint
+      - run: npm run test:unit
+
+  e2e:
+    name: Build & end-to-end tests
+    runs-on: ubuntu-latest
+    # The licensed Bible source (resources/SKB/) can never be committed, so a
+    # clean checkout cannot run the real extraction — `prebuild` would abort.
+    # CI therefore builds against the synthetic fixture. The fixture branch is
+    # refused unless CI=true, and there is no deploy job, so a fixture build can
+    # never be published. See README, "Skaffa bibeltexten".
+    env:
+      CI: 'true'
+      USE_SCRIPTURE_FIXTURE: '1'
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: npm
+
+      - run: npm ci
+
+      # `npm run test:e2e` builds dist/ (via the Playwright webServer command)
+      # and runs every spec, including the axe accessibility suite.
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e

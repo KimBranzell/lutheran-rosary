@@ -14,6 +14,9 @@ import {
   passageId,
 } from '../data/mystery-catalog.js';
 import { formatWeekdays, todayIso, weekdayOf } from '../data/weekdays.js';
+import { loadProgress } from '../prayer/session-progress.js';
+import { isValidTextScale } from './text-scale.js';
+import { esc } from '../util/esc.js';
 
 const STORAGE_KEY_SETTINGS = 'luthers-rosenkrans-settings';
 const PRAYER_CHOICES = ['aveMaria', 'jesuBoen'];
@@ -27,22 +30,13 @@ export function getStorageNotice() {
   return lastLoadNotice;
 }
 
-/** Escape interpolated text for safe template interpolation. */
-function esc(value) {
-  return String(value)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
-}
-
 export function getDefaultSettings(today = todayIso()) {
   return {
-    version: 2,
+    version: 3,
     mysterySetId: getMysterySetForDay(weekdayOf(today)).id,
     mysterySetDate: '',
     prayerChoice: 'aveMaria',
+    textScale: 1,
     reminders: {
       morning: { enabled: false, time: '' },
       noon: { enabled: false, time: '' },
@@ -102,6 +96,11 @@ function mergeAndValidate(raw, defaults) {
     problems.push('prayerChoice');
   }
 
+  // Additive field: a stored v2 blob simply has no `textScale`. That is not a
+  // defect worth telling the user their settings were reset — so, unlike the
+  // fields above, a missing/invalid value never pushes onto `problems`.
+  settings.textScale = isValidTextScale(raw.textScale) ? raw.textScale : defaults.textScale;
+
   settings.reminders = sanitizeReminders(raw.reminders, defaults);
 
   return { settings, problems };
@@ -151,9 +150,14 @@ export function renderHomeView(container, settings, onStart, onNavigateSettings,
   const todaySetId = getMysterySetForDay(weekdayOf(today)).id;
   const currentSet = mysterySets.find((s) => s.id === settings.mysterySetId) || mysterySets[0];
 
+  // Mutable so the preview can be upgraded once the scripture asset lands,
+  // without re-rendering the whole view (which would steal focus and reset the
+  // checked radios). See the returned `refresh`.
+  let data = scriptureData;
+
   // One mystery list item: title plus its Scripture reference.
   function mysteryItem(mystery) {
-    const passage = scriptureData ? scriptureData[passageId(mystery.ref)] : null;
+    const passage = data ? data[passageId(mystery.ref)] : null;
     const reference = (passage && passage.displayRef) || mystery.ref;
     return `<li class="mystery-preview__item">
       <span class="mystery-preview__title">${esc(mystery.title)}</span>
@@ -198,6 +202,16 @@ export function renderHomeView(container, settings, onStart, onNavigateSettings,
 
   const notice = getStorageNotice();
 
+  // Offer to resume an interrupted session — anything past the first step.
+  // Step 0 is never stored, so this is only ever a real position.
+  const savedSession = loadProgress();
+  const resumable = savedSession && savedSession.index > 0 ? savedSession : null;
+
+  const startButtons = resumable
+    ? `<button id="btn-resume" class="btn btn--primary btn--block" type="button">Fortsätt på steg ${esc(resumable.index + 1)}</button>
+       <button id="btn-start" class="btn btn--ghost btn--block" type="button">Börja om från början</button>`
+    : `<button id="btn-start" class="btn btn--primary btn--block" type="button">Börja rosenkransen</button>`;
+
   container.innerHTML = `
     <section class="home-view" aria-labelledby="home-heading">
       <h2 id="home-heading">Dagens rosenkrans</h2>
@@ -228,7 +242,7 @@ export function renderHomeView(container, settings, onStart, onNavigateSettings,
       </div>
 
       <div class="stack">
-        <button id="btn-start" class="btn btn--primary btn--block" type="button">Börja rosenkransen</button>
+        ${startButtons}
         <button id="btn-settings" class="btn btn--ghost btn--block" type="button">Påminnelser</button>
       </div>
     </section>
@@ -262,7 +276,23 @@ export function renderHomeView(container, settings, onStart, onNavigateSettings,
     onStart(settings);
   });
 
+  const resumeBtn = container.querySelector('#btn-resume');
+  if (resumeBtn) {
+    resumeBtn.addEventListener('click', () => onStart(settings, resumable.index));
+  }
+
   container.querySelector('#btn-settings').addEventListener('click', () => {
     onNavigateSettings();
   });
+
+  // Lets the app upgrade the preview in place when scripture data arrives after
+  // first paint. Deliberately patches only `#preview-*`: a full re-render would
+  // reset the checked radios and move focus (WCAG 2.4.3).
+  return {
+    refresh(next) {
+      if (!next || typeof next !== 'object') return;
+      data = next;
+      renderPreview();
+    },
+  };
 }

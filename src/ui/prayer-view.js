@@ -3,9 +3,15 @@
  *
  * Renders the current step's title/body/reference, the rosary loop, a polite
  * live status, and persistent previous/continue controls.
+ *
+ * @returns {{ destroy: () => void }} teardown that detaches the container-level
+ *   keydown listener; main.js must call it before rendering another view.
  */
 
 import { buildSession, SessionState } from '../prayer/build-session.js';
+import { saveProgress, clearProgress } from '../prayer/session-progress.js';
+import { setWakeLockWanted } from '../prayer/wake-lock.js';
+import { todayIso } from '../data/weekdays.js';
 import { buildRosarySvg, highlightBead } from './rosary-visual.js';
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
@@ -57,10 +63,18 @@ function completedBeadIds(steps, upto) {
   return ids;
 }
 
-export function renderPrayerView(container, settings, scriptureData, onExit) {
+/**
+ * @param {object} [options]
+ * @param {number} [options.startIndex] 0-based step to resume at, clamped into
+ *   range so a future step-count change can never produce an invalid index.
+ */
+export function renderPrayerView(container, settings, scriptureData, onExit, { startIndex = 0 } = {}) {
   const dayOfWeek = new Date().getDay();
-  const steps = buildSession(settings.prayerChoice, dayOfWeek, scriptureData);
+  const steps = buildSession(settings.prayerChoice, dayOfWeek, scriptureData, settings.mysterySetId);
   const session = new SessionState(steps);
+
+  const start = Number.isInteger(startIndex) ? startIndex : 0;
+  session.currentIndex = Math.min(Math.max(0, start), steps.length - 1);
 
   container.innerHTML = `
     <section class="prayer-view" aria-labelledby="step-title">
@@ -142,6 +156,20 @@ export function renderPrayerView(container, settings, scriptureData, onExit) {
     } else {
       statusEl.textContent = `Steg ${index + 1} av ${steps.length}. ${kicker}. ${step.title}.`;
     }
+
+    // Persist progress so an accidental refresh can resume. Step 0 has nothing
+    // to resume to and the final step completes the session, so both clear.
+    // ("Avsluta" deliberately keeps progress; only finishing step 86 drops it.)
+    if (session.currentIndex === 0 || session.isComplete) {
+      clearProgress();
+    } else {
+      saveProgress({
+        index: session.currentIndex,
+        prayerChoice: settings.prayerChoice,
+        mysterySetId: settings.mysterySetId,
+        date: todayIso(),
+      });
+    }
   }
 
   function goNext() {
@@ -165,7 +193,11 @@ export function renderPrayerView(container, settings, scriptureData, onExit) {
 
   // Arrow keys are handled once here. Space is intentionally NOT intercepted so
   // buttons never double-activate from a native click plus a synthetic one.
-  container.addEventListener('keydown', (event) => {
+  //
+  // `container` is the persistent <main id="app">, so this listener outlives the
+  // view. It must be removed by destroy() or every enter/exit of the prayer view
+  // stacks another handler bound to a stale SessionState and detached DOM nodes.
+  function onKeydown(event) {
     if (event.key === 'ArrowRight') {
       event.preventDefault();
       goNext();
@@ -173,9 +205,21 @@ export function renderPrayerView(container, settings, scriptureData, onExit) {
       event.preventDefault();
       goPrevious();
     }
-  });
+  }
+  container.addEventListener('keydown', onKeydown);
 
   // Move focus into the view on entry so keyboard navigation (arrow keys) and
   // screen-reader announcement start from the step heading, not a removed button.
   updateView({ focusTitle: true });
+
+  // Keep the screen awake while the session is on screen. Silently a no-op on
+  // browsers without the Screen Wake Lock API — there is deliberately no UI.
+  setWakeLockWanted(true);
+
+  return {
+    destroy() {
+      container.removeEventListener('keydown', onKeydown);
+      setWakeLockWanted(false);
+    },
+  };
 }

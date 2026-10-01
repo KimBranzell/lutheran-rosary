@@ -264,10 +264,11 @@ export function getCurrentColor() {
   // The Church year spans two calendar years; check both
   const colorThisYear = getLiturgicalColor(today, year);
   const colorPrevYear = getLiturgicalColor(today, year - 1);
-  // Use the one that has observances covering today
-  const obsThisYear = computeChurchYear(year);
+  // Use whichever church year actually contains today. Today falls in this
+  // year's church year unless it lies inside the previous calendar year's
+  // (the church year spans New Year), which is what the previous-year check
+  // detects.
   const obsPrevYear = computeChurchYear(year - 1);
-  const hasThisYear = obsThisYear.some(o => sameDay(o.date, today));
   const hasPrevYear = obsPrevYear.some(o => sameDay(o.date, today));
   if (hasPrevYear) return colorPrevYear;
   return colorThisYear;

@@ -1,0 +1,182 @@
+{
+  "LUK_1_26-38": {
+    "bookCode": "LUK",
+    "bookName": "Lukasevangeliet",
+    "chapter": 1,
+    "startVerse": 26,
+    "endVerse": 38,
+    "displayRef": "Lukasevangeliet 1:26-38",
+    "text": "Platshållartext för avsnittet. Bibeltexten ingår inte i repot utan hämtas vid bygget ur Svenska Kärnbibeln, och den här strängen används enbart av CI."
+  },
+  "LUK_1_39-45": {
+    "bookCode": "LUK",
+    "bookName": "Lukasevangeliet",
+    "chapter": 1,
+    "startVerse": 39,
+    "endVerse": 45,
+    "displayRef": "Lukasevangeliet 1:39-45",
+    "text": "Platshållartext för avsnittet. Bibeltexten ingår inte i repot utan hämtas vid bygget ur Svenska Kärnbibeln, och den här strängen används enbart av CI."
+  },
+  "LUK_2_1-20": {
+    "bookCode": "LUK",
+    "bookName": "Lukasevangeliet",
+    "chapter": 2,
+    "startVerse": 1,
+    "endVerse": 20,
+    "displayRef": "Lukasevangeliet 2:1-20",
+    "text": "Platshållartext för avsnittet. Bibeltexten ingår inte i repot utan hämtas vid bygget ur Svenska Kärnbibeln, och den här strängen används enbart av CI."
+  },
+  "LUK_2_22-38": {
+    "bookCode": "LUK",
+    "bookName": "Lukasevangeliet",
+    "chapter": 2,
+    "startVerse": 22,
+    "endVerse": 38,
+    "displayRef": "Lukasevangeliet 2:22-38",
+    "text": "Platshållartext för avsnittet. Bibeltexten ingår inte i repot utan hämtas vid bygget ur Svenska Kärnbibeln, och den här strängen används enbart av CI."
+  },
+  "LUK_2_41-50": {
+    "bookCode": "LUK",
+    "bookName": "Lukasevangeliet",
+    "chapter": 2,
+    "startVerse": 41,
+    "endVerse": 50,
+    "displayRef": "Lukasevangeliet 2:41-50",
+    "text": "Platshållartext för avsnittet. Bibeltexten ingår inte i repot utan hämtas vid bygget ur Svenska Kärnbibeln, och den här strängen används enbart av CI."
+  },
+  "MAT_3_13-16": {
+    "bookCode": "MAT",
+    "bookName": "Matteusevangeliet",
+    "chapter": 3,
+    "startVerse": 13,
+    "endVerse": 16,
+    "displayRef": "Matteusevangeliet 3:13-16",
+    "text": "Platshållartext för avsnittet. Bibeltexten ingår inte i repot utan hämtas vid bygget ur Svenska Kärnbibeln, och den här strängen används enbart av CI."
+  },
+  "JHN_2_1-11": {
+    "bookCode": "JHN",
+    "bookName": "Johannesevangeliet",
+    "chapter": 2,
+    "startVerse": 1,
+    "endVerse": 11,
+    "displayRef": "Johannesevangeliet 2:1-11",
+    "text": "Platshållartext för avsnittet. Bibeltexten ingår inte i repot utan hämtas vid bygget ur Svenska Kärnbibeln, och den här strängen används enbart av CI."
+  },
+  "MRK_1_14-15": {
+    "bookCode": "MRK",
+    "bookName": "Markusevangeliet",
+    "chapter": 1,
+    "startVerse": 14,
+    "endVerse": 15,
+    "displayRef": "Markusevangeliet 1:14-15",
+    "text": "Platshållartext för avsnittet. Bibeltexten ingår inte i repot utan hämtas vid bygget ur Svenska Kärnbibeln, och den här strängen används enbart av CI."
+  },
+  "MAT_17_1-8": {
+    "bookCode": "MAT",
+    "bookName": "Matteusevangeliet",
+    "chapter": 17,
+    "startVerse": 1,
+    "endVerse": 8,
+    "displayRef": "Matteusevangeliet 17:1-8",
+    "text": "Platshållartext för avsnittet. Bibeltexten ingår inte i repot utan hämtas vid bygget ur Svenska Kärnbibeln, och den här strängen används enbart av CI."
+  },
+  "LUK_22_14-20": {
+    "bookCode": "LUK",
+    "bookName": "Lukasevangeliet",
+    "chapter": 22,
+    "startVerse": 14,
+    "endVerse": 20,
+    "displayRef": "Lukasevangeliet 22:14-20",
+    "text": "Platshållartext för avsnittet. Bibeltexten ingår inte i repot utan hämtas vid bygget ur Svenska Kärnbibeln, och den här strängen används enbart av CI."
+  },
+  "LUK_22_39-46": {
+    "bookCode": "LUK",
+    "bookName": "Lukasevangeliet",
+    "chapter": 22,
+    "startVerse": 39,
+    "endVerse": 46,
+    "displayRef": "Lukasevangeliet 22:39-46",
+    "text": "Platshållartext för avsnittet. Bibeltexten ingår inte i repot utan hämtas vid bygget ur Svenska Kärnbibeln, och den här strängen används enbart av CI."
+  },
+  "MAT_27_26": {
+    "bookCode": "MAT",
+    "bookName": "Matteusevangeliet",
+    "chapter": 27,
+    "startVerse": 26,
+    "endVerse": 26,
+    "displayRef": "Matteusevangeliet 27:26",
+    "text": "Platshållartext för avsnittet. Bibeltexten ingår inte i repot utan hämtas vid bygget ur Svenska Kärnbibeln, och den här strängen används enbart av CI."
+  },
+  "MAT_27_27-31": {
+    "bookCode": "MAT",
+    "bookName": "Matteusevangeliet",
+    "chapter": 27,
+    "startVerse": 27,
+    "endVerse": 31,
+    "displayRef": "Matteusevangeliet 27:27-31",
+    "text": "Platshållartext för avsnittet. Bibeltexten ingår inte i repot utan hämtas vid bygget ur Svenska Kärnbibeln, och den här strängen används enbart av CI."
+  },
+  "MAT_27_32": {
+    "bookCode": "MAT",
+    "bookName": "Matteusevangeliet",
+    "chapter": 27,
+    "startVerse": 32,
+    "endVerse": 32,
+    "displayRef": "Matteusevangeliet 27:32",
+    "text": "Platshållartext för avsnittet. Bibeltexten ingår inte i repot utan hämtas vid bygget ur Svenska Kärnbibeln, och den här strängen används enbart av CI."
+  },
+  "JHN_19_25-30": {
+    "bookCode": "JHN",
+    "bookName": "Johannesevangeliet",
+    "chapter": 19,
+    "startVerse": 25,
+    "endVerse": 30,
+    "displayRef": "Johannesevangeliet 19:25-30",
+    "text": "Platshållartext för avsnittet. Bibeltexten ingår inte i repot utan hämtas vid bygget ur Svenska Kärnbibeln, och den här strängen används enbart av CI."
+  },
+  "MRK_16_1-7": {
+    "bookCode": "MRK",
+    "bookName": "Markusevangeliet",
+    "chapter": 16,
+    "startVerse": 1,
+    "endVerse": 7,
+    "displayRef": "Markusevangeliet 16:1-7",
+    "text": "Platshållartext för avsnittet. Bibeltexten ingår inte i repot utan hämtas vid bygget ur Svenska Kärnbibeln, och den här strängen används enbart av CI."
+  },
+  "LUK_24_45-53": {
+    "bookCode": "LUK",
+    "bookName": "Lukasevangeliet",
+    "chapter": 24,
+    "startVerse": 45,
+    "endVerse": 53,
+    "displayRef": "Lukasevangeliet 24:45-53",
+    "text": "Platshållartext för avsnittet. Bibeltexten ingår inte i repot utan hämtas vid bygget ur Svenska Kärnbibeln, och den här strängen används enbart av CI."
+  },
+  "ACT_2_1-7": {
+    "bookCode": "ACT",
+    "bookName": "Apostlagärningarna",
+    "chapter": 2,
+    "startVerse": 1,
+    "endVerse": 7,
+    "displayRef": "Apostlagärningarna 2:1-7",
+    "text": "Platshållartext för avsnittet. Bibeltexten ingår inte i repot utan hämtas vid bygget ur Svenska Kärnbibeln, och den här strängen används enbart av CI."
+  },
+  "1CO_12_23-27": {
+    "bookCode": "1CO",
+    "bookName": "Första Korintierbrevet",
+    "chapter": 12,
+    "startVerse": 23,
+    "endVerse": 27,
+    "displayRef": "Första Korintierbrevet 12:23-27",
+    "text": "Platshållartext för avsnittet. Bibeltexten ingår inte i repot utan hämtas vid bygget ur Svenska Kärnbibeln, och den här strängen används enbart av CI."
+  },
+  "REV_21_1-4": {
+    "bookCode": "REV",
+    "bookName": "Uppenbarelseboken",
+    "chapter": 21,
+    "startVerse": 1,
+    "endVerse": 4,
+    "displayRef": "Uppenbarelseboken 21:1-4",
+    "text": "Platshållartext för avsnittet. Bibeltexten ingår inte i repot utan hämtas vid bygget ur Svenska Kärnbibeln, och den här strängen används enbart av CI."
+  }
+}

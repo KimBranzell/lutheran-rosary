@@ -35,7 +35,10 @@ module.exports = (env, argv) => {
     plugins: [
       new HtmlWebpackPlugin({
         template: './public/index.html',
-        inject: 'body',
+        // Inject into <head> (with the default deferred script loading) so the
+        // entry chunk starts downloading alongside the stylesheet instead of
+        // only once the parser reaches </body>.
+        inject: 'head',
       }),
       new CopyWebpackPlugin({
         patterns: [

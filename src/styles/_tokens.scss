@@ -8,6 +8,10 @@
 // back to its initial value.
 
 :root {
+  // Let native form controls, scrollbars and the date/time picker follow
+  // prefers-color-scheme. Without this they render light against the dark theme.
+  color-scheme: light dark;
+
   // Typography
   --font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
   --font-ui: 'Alegreya Sans', system-ui, -apple-system, sans-serif;

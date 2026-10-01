@@ -3,15 +3,34 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <!-- Tells the UA which schemes the app supports, so native controls,
+       scrollbars and the time picker follow prefers-color-scheme instead of
+       staying light against a dark theme. Must precede first paint. -->
+  <meta name="color-scheme" content="light dark">
   <meta name="theme-color" content="#6B4E16" id="theme-color">
   <meta name="description" content="Luthers Rosenkrans — Be rosenkransen på svenska">
   <link rel="manifest" href="/manifest.webmanifest">
   <link rel="icon" href="/icons/icon-192.png" type="image/png">
   <link rel="apple-touch-icon" href="/icons/icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Rosenkrans">
   <title>Luthers Rosenkrans</title>
+  <!-- Render-critical faces only. `crossorigin` is mandatory even for
+       same-origin fonts (they are fetched in CORS mode) — omitting it makes the
+       browser fetch each font twice. -->
+  <link rel="preload" href="/fonts/fraunces-latin-standard-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/alegreya-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
 </head>
 <body data-liturgical-color="vit">
   <a class="skip-link" href="#app">Hoppa till innehållet</a>
+
+  <noscript>
+    <p class="noscript-note">
+      Den här appen behöver JavaScript för att fungera. Aktivera JavaScript och
+      ladda om sidan.
+    </p>
+  </noscript>
 
   <header class="app-bar" role="banner">
     <div class="app-bar__row">

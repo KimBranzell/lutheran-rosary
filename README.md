@@ -17,6 +17,15 @@ till tredje part vid körtid.
 - **Liturgisk färgsättning** efter Svenska kyrkans kyrkoår, med kyrkoårstid och
   dagens namn i sidhuvudet.
 - **Påminnelser** via lokala aviseringar (bästa ansträngning – se nedan).
+- **Fortsätt där du slutade**: pågående session sparas lokalt och erbjuder
+  "Fortsätt på steg N" – även efter en omladdning mitt i böneprocessen.
+- **Navigering som i webbläsaren**: varje vy har sin egen `#`-adress (`/#prayer`,
+  `/#settings`, `/#sources`), så Back-knappen lämnar böneprocessen i stället för
+  att stänga appen, och länkar kan peka rakt på en vy.
+- **Textstorlek** i tre steg (Normal / Stor / Mycket stor), ovanpå webbläsarens
+  eller operativsystemets egen skalning.
+- **Skärmen stannar vaken** medan en session pågår (Screen Wake Lock, där webbläsaren
+  stöder det).
 - **WCAG 2.2 AA**: tangentbord, skärmläsare, kontrast i alla tema, reducerad rörelse.
 
 ## Skaffa bibeltexten (krävs för att bygga)
@@ -43,6 +52,25 @@ bygger. Koden som extraherar och hanterar texterna finns i repot:
 
 Saknas `resources/SKB/` avbryter bygget med ett förklarande felmeddelande.
 
+### CI och platshållartexten
+
+Eftersom bibeltexten **inte** får ligga i repot kan en ren klon inte köra
+extraheringen – och därmed inte bygga. För att ändå kunna köra testerna i CI finns
+en syntetisk platshållare i `scripts/fixtures/scripture-passages.fixture.json`
+samt ett alternativt grensnitt i `scripts/extract-scriptures.mjs`:
+
+```bash
+CI=true USE_SCRIPTURE_FIXTURE=1 npm run build
+```
+
+Tre saker att veta:
+
+1. **Grenen avvisas om `CI=true` saknas.** Det ska vara omöjligt att råka bygga
+   mot platshållaren – en riktig byggnad kräver `resources/SKB/`.
+2. **Platshållartexten är inte bibeltext.** Den är uppdiktad och märkt som sådan.
+3. **En platsbyggnad är aldrig publicerbar.** Repot har inget deploy-steg, och
+   `dist/` som byggs i CI används enbart för att köra Playwright-testerna.
+
 Bibeltexten bevaras ordagrant. Förklarande tillägg, korsreferenser och
 alternativa formuleringar inom hakparenteser eller parenteser tas bort vid
 extraktionen, och endast de konfigurerade versavsnitten läses in.
@@ -62,7 +90,8 @@ npm run test:unit      # enhetstester (node --test)
 npx playwright install chromium
 npm run test:e2e       # Playwright, inkl. axe-skanner
 npm run test:a11y      # endast tillgänglighetstesterna
-npm run check          # enhetstester + produktionsbygge
+npm run lint           # ESLint (flat config, eslint:recommended)
+npm run check          # lint + enhetstester + produktionsbygge
 ```
 
 ### Övriga skript
@@ -131,6 +160,27 @@ Påminnelser är **bästa ansträngning**. Appen kan schemalägga medan den är 
 och kontrollera missade tillfällen när den startas igen. Är appen stängd eller
 avstängd av systemet kan aviseringen utebli eller komma sent. Det står också i
 gränssnittet. Ingen server, ingen push, inga native Android-larm.
+
+Varje avisering har två knappar: **Be rosenkransen**, som öppnar appen direkt i
+böneprocessen, och **Påminn senare**, som upprepar påminnelsen efter 10 minuter.
+
+Kända begränsningar, i samma anda som "bästa ansträngning" ovan:
+
+- **Safari visar inte knapparna alls** (varken macOS eller iOS) – webbläsaren
+  saknar stöd för `actions`. Att trycka på själva aviseringen fungerar ändå på
+  macOS.
+- **På iOS öppnar inte en tryckt avisering appen.** iOS stöder inte händelsen
+  `notificationclick` i webbappar, så varken knappar eller tryck kan kopplas till
+  en åtgärd. Appen schemalägger och visar alltså aviseringar, men själva
+  tryckhanteringen saknas.
+- **"Påminn senare" kräver att appen är öppen.** En service worker kan inte hålla
+  en lång timer tillförlitligt, så fördröjningen schemaläggs i det öppna
+  fönstret. Är appen stängd gör knappen ingenting.
+
+## Beroenden och säkerhetsaviseringar
+
+Appen har inga produktionsberoenden i npm – allt i `package.json` är
+utvecklingsverktyg.
 
 ## Licens
 
