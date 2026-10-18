@@ -19,7 +19,7 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.13.0",
-    "@bubblewrap/cli": "^1.25.0",
+    "@bubblewrap/cli": "^1.27.0",
     "@eslint/js": "^10.0.1",
     "@playwright/test": "^1.62.1",
     "copy-webpack-plugin": "^14.0.0",
